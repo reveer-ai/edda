@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { test } from "node:test";
-import { edda, starter, tempDir } from "./helpers.js";
+import { edda, seed, tempDir } from "./helpers.js";
 
 // Every file and directory under root, with file contents, for before/after comparisons.
 function snapshot(root, dir = root, entries = {}) {
@@ -19,11 +19,11 @@ function snapshot(root, dir = root, entries = {}) {
   return entries;
 }
 
-test("creates edda/README.md from the starter in a fresh directory", () => {
+test("creates edda/README.md from the seed in a fresh directory", () => {
   const { status, stdout, cwd } = edda(["init"]);
   assert.equal(status, 0);
   assert.match(stdout, /Created edda\/README\.md/);
-  assert.equal(readFileSync(join(cwd, "edda", "README.md"), "utf8"), starter);
+  assert.equal(readFileSync(join(cwd, "edda", "README.md"), "utf8"), seed);
 });
 
 test("adds the record to an existing edda/ directory without touching its other files", () => {
@@ -32,7 +32,7 @@ test("adds the record to an existing edda/ directory without touching its other 
   writeFileSync(join(cwd, "edda", "notes.md"), "kept\n");
   const { status } = edda(["init"], cwd);
   assert.equal(status, 0);
-  assert.equal(readFileSync(join(cwd, "edda", "README.md"), "utf8"), starter);
+  assert.equal(readFileSync(join(cwd, "edda", "README.md"), "utf8"), seed);
   assert.equal(readFileSync(join(cwd, "edda", "notes.md"), "utf8"), "kept\n");
 });
 
@@ -64,5 +64,5 @@ test("changes nothing outside edda/", () => {
   const before = snapshot(cwd);
   edda(["init"], cwd);
   const after = snapshot(cwd);
-  assert.deepEqual(after, { ...before, "edda/": null, "edda/README.md": starter });
+  assert.deepEqual(after, { ...before, "edda/": null, "edda/README.md": seed });
 });

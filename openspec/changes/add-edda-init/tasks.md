@@ -2,7 +2,7 @@
 
 ## 1. Package
 
-- [x] 1.1 Add `package.json` for `edda-ai` (an `edda` bin, `files` limited to `bin/` and `starter/`, Node 18 or later, MIT, and a `test` script), and verify that `npm pack --dry-run` lists only `LICENSE`, `package.json`, `bin/edda.js` and `starter/README.md`
+- [x] 1.1 Add `package.json` for `edda-ai` (an `edda` bin, `files` limited to `bin/` and `seed/`, Node 18 or later, MIT, and a `test` script), and verify that `npm pack --dry-run` lists only `LICENSE`, `package.json`, `bin/edda.js` and `seed/README.md`
 
 ## 2. CLI
 
@@ -10,12 +10,12 @@
 
 ## 3. Init
 
-- [x] 3.1 Add the starter record at `starter/README.md` (what the directory is, the principles, and what doesn't belong there), and verify that it renders as plain Markdown and doesn't mention Edda's own decisions
+- [x] 3.1 Add the seed record at `seed/README.md` (what the directory is, the principles, and what doesn't belong there), and verify that it renders as plain Markdown and doesn't mention Edda's own decisions
 - [x] 3.2 Implement `edda init` and verify it with tests in `test/init.test.js` covering each scenario in `specs/init`
 
 ## 4. Edda's own record
 
-- [x] 4.1 Update `edda/README.md` so it doesn't repeat what this change's specs and proposal now hold (the package name and the 0.1.0 scope), and so it links to `starter/README.md` for the principles. Verify by reading it against the principle "Each fact lives in one place"
+- [x] 4.1 Update `edda/README.md` so it doesn't repeat what this change's specs and proposal now hold (the package name and the 0.1.0 scope), and so it links to `seed/README.md` for the principles. Verify by reading it against the principle "Each fact lives in one place"
 
 ## 5. Integration
 

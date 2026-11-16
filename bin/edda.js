@@ -15,7 +15,7 @@ Options:
   -h, --help     Show this help
   -v, --version  Show the version`;
 
-// Adds the starter record. An existing record is never overwritten,
+// Seeds the record. An existing record is never overwritten,
 // so running init again is always safe.
 function init(cwd) {
   const target = join(cwd, "edda", "README.md");
@@ -24,7 +24,7 @@ function init(cwd) {
     return;
   }
   mkdirSync(dirname(target), { recursive: true });
-  copyFileSync(join(packageRoot, "starter", "README.md"), target, constants.COPYFILE_EXCL);
+  copyFileSync(join(packageRoot, "seed", "README.md"), target, constants.COPYFILE_EXCL);
   console.log("Created edda/README.md.");
 }
 

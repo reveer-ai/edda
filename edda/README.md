@@ -4,7 +4,7 @@ Edda keeps a project's record: what the project has established, written down in
 
 This is Edda's own record. Edda is built using Edda, so this repository has two things that look alike:
 - **`edda/`** (this directory) is Edda's own record: the project's direction and its decisions.
-- **`starter/README.md`** is the file `edda init` adds to other projects. Until the skill exists, it also holds Edda's principles. Read them there; they aren't repeated here.
+- **`seed/README.md`** is the file `edda init` adds to other projects. Until the skill exists, it also holds Edda's principles. Read them there; they aren't repeated here.
 
 Work is tracked in Linear: the team is "edda" (key EDA), and the project is [Edda v1](https://linear.app/reveer/project/edda-v1-c74dfbbf87b6). What the code does, and the reasons for each change, are in OpenSpec: the specs are in `openspec/specs/`, and each change's proposal and design are in `openspec/changes/`. This record doesn't repeat them.
 
@@ -24,13 +24,21 @@ All of these were made by Josh Gillette on 2026-11-15.
 
 ### Form: an agent skill, plus a minimal CLI
 
-Edda ships mainly as an agent skill that teaches an agent to keep and tend a project's record. The skill is the spec: its instructions define the method, and there's no separate spec document. Once the skill exists, the principles move into it from `starter/README.md`.
+Edda ships mainly as an agent skill that teaches an agent to keep and tend a project's record. The skill is the spec: its instructions define the method, and there's no separate spec document. Once the skill exists, the principles move into it from `seed/README.md`.
 
 There's a CLI for `edda init`, which sets Edda up in a repository. Nothing more goes into the CLI until there's a need for it.
 
 ### Location: one top-level `edda/` directory
 
 A project's record lives entirely in a top-level `edda/` directory, so Edda doesn't scatter files around the repository. Josh had used the name `record/` before; it was dropped because it's more likely to clash with a directory a project already has. The entry file is `README.md` for now.
+
+### Two kinds of files: seeded and installed
+
+`edda init` handles two kinds of files, and treats them differently:
+- **Seeded:** created once if they're missing, then owned by the project and never touched again. The record (`edda/README.md`) is one. They ship in the package's `seed/` directory.
+- **Installed:** owned by Edda and replaced on every run, so they stay current. The skill and the pointer will be these. Projects shouldn't edit them.
+
+The name `seed/` was chosen over `starter/` (which reads like a starter kit) and over `template/`, `scaffold/` and `skeleton/`, because each of those suggests a structure to fill in, and Edda isn't a template.
 
 ### Install: the skill goes in `.agents/`, with a link for Claude Code if it's present
 
