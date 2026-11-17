@@ -1,7 +1,7 @@
 # init Specification
 
 ## Purpose
-`edda init` sets Edda up in a repository by giving it a place for its record. Running it again is always safe.
+`edda init` sets Edda up in a repository: it gives the project a place for its record, and points agents at it from `AGENTS.md` and `CLAUDE.md`. Running it again is always safe.
 
 ## Requirements
 

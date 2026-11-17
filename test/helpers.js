@@ -5,7 +5,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const packageRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
-export const seed = readFileSync(join(packageRoot, "seed", "README.md"), "utf8");
+export const seed = readFileSync(join(packageRoot, "seed", "index.md"), "utf8");
 export const { version } = JSON.parse(readFileSync(join(packageRoot, "package.json"), "utf8"));
 
 // Runs the real CLI the way a user would, in the given directory.
