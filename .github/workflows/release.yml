@@ -1,0 +1,93 @@
+# Publishes package.json's version to npm when it isn't there yet, then gives it a GitHub release.
+# npm's trusted publisher for edda-ai names this file (release.yml) and the npm environment:
+# renaming either breaks publishing until the publisher is recreated on npmjs.com.
+# Every step checks its own state, so rerunning a failed run repairs it.
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  test:
+    uses: ./.github/workflows/test.yml
+    permissions:
+      contents: read
+
+  # Holds the npm identity token, and nothing that can write to the repository.
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      name: ${{ steps.package.outputs.name }}
+      version: ${{ steps.package.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - name: Check that npm supports trusted publishing (11.5.1 or later)
+        run: |
+          npm_version=$(npm --version)
+          node -e '
+            const [a, b, c] = process.argv[1].split(".").map(Number);
+            if (a * 1e6 + b * 1e3 + c < 11005001) {
+              console.error(`npm ${process.argv[1]} is older than 11.5.1, which trusted publishing needs.`);
+              process.exit(1);
+            }
+          ' "$npm_version"
+      - id: package
+        run: |
+          echo "name=$(node -p 'require("./package.json").name')" >> "$GITHUB_OUTPUT"
+          echo "version=$(node -p 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
+      - id: plan
+        name: Decide whether to publish
+        run: |
+          outcome=$(node scripts/release-plan.js)
+          echo "outcome=$outcome" >> "$GITHUB_OUTPUT"
+      - if: steps.plan.outputs.outcome == 'publish'
+        run: npm publish
+
+  # Holds the repository write token, and no npm identity token.
+  github-release:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      NAME: ${{ needs.publish.outputs.name }}
+      VERSION: ${{ needs.publish.outputs.version }}
+    steps:
+      - name: Create the GitHub release if it's missing
+        run: |
+          tag="v$VERSION"
+          if ! npm view "$NAME" versions --json | jq -e --arg v "$VERSION" 'index($v) != null' > /dev/null; then
+            echo "$NAME@$VERSION isn't on npm, so there's no release to create."
+            exit 0
+          fi
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "The GitHub release $tag already exists."
+            exit 0
+          fi
+          # Tag the commit npm says it published, which is this run's commit unless a release was missed.
+          sha=$(npm view "$NAME@$VERSION" gitHead)
+          if [ -z "$sha" ]; then
+            echo "npm has no gitHead for $NAME@$VERSION, so the commit to tag is unknown." >&2
+            exit 1
+          fi
+          gh release create "$tag" --repo "$GITHUB_REPOSITORY" --target "$sha" --title "$tag" --generate-notes
