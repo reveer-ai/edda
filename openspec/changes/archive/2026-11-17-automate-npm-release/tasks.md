@@ -37,7 +37,7 @@ Each of these changes something outside the repository, so each needs Josh's go-
 
 - [x] 6.1 Create the GitHub environment `npm` on `reveer-ai/edda`, with deployments allowed only from `main`. Verify with `gh api repos/reveer-ai/edda/environments/npm` and its deployment branch policies.
 - [x] 6.2 Tag `f66cce5` as `v0.1.0` and create its GitHub release. Verify that `gh release view v0.1.0` shows it at `f66cce5`, matching npm's `gitHead` for `0.1.0`.
-- [ ] 6.3 Josh creates the trusted publisher for `edda-ai` on npmjs.com: owner `reveer-ai`, repository `edda`, workflow `release.yml`, environment `npm`, with direct `npm publish` allowed. It expires 2 days after it's created if nothing publishes, so do this no earlier than shortly before the merge. Verify by Josh confirming it.
+- [x] 6.3 Josh creates the trusted publisher for `edda-ai` on npmjs.com: owner `reveer-ai`, repository `edda`, workflow `release.yml`, environment `npm`, with direct `npm publish` allowed. It expires 2 days after it's created if nothing publishes, so do this no earlier than shortly before the merge. Verify by Josh confirming it.
 
 ## 7. Integration
 
