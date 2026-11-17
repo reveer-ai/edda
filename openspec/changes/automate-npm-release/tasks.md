@@ -7,7 +7,7 @@
 
 ## 2. Test workflow
 
-- [ ] 2.1 Add `.github/workflows/test.yml`, triggered on `pull_request` and `workflow_call`, that runs `npm test` on Node 18, 20, 22, 24 and 26 with `actions/checkout@v6` and `actions/setup-node@v6`, and only `contents: read` permission. Verify that it parses (for example with `npx yaml-lint` or by inspection) and that its jobs pass on the PR's checks. If Node 18 or 20 fails and the fix isn't small, stop and ask Josh before changing `engines`.
+- [x] 2.1 Add `.github/workflows/test.yml`, triggered on `pull_request` and `workflow_call`, that runs `npm test` on Node 18, 20, 22, 24 and 26 with `actions/checkout@v6` and `actions/setup-node@v6`, and only `contents: read` permission. Verify that it parses (for example with `npx yaml-lint` or by inspection) and that its jobs pass on the PR's checks. If Node 18 or 20 fails and the fix isn't small, stop and ask Josh before changing `engines`.
 
 ## 3. Release workflow
 
@@ -35,8 +35,8 @@
 
 Each of these changes something outside the repository, so each needs Josh's go-ahead first.
 
-- [ ] 6.1 Create the GitHub environment `npm` on `reveer-ai/edda`, with deployments allowed only from `main`. Verify with `gh api repos/reveer-ai/edda/environments/npm` and its deployment branch policies.
-- [ ] 6.2 Tag `f66cce5` as `v0.1.0` and create its GitHub release. Verify that `gh release view v0.1.0` shows it at `f66cce5`, matching npm's `gitHead` for `0.1.0`.
+- [x] 6.1 Create the GitHub environment `npm` on `reveer-ai/edda`, with deployments allowed only from `main`. Verify with `gh api repos/reveer-ai/edda/environments/npm` and its deployment branch policies.
+- [x] 6.2 Tag `f66cce5` as `v0.1.0` and create its GitHub release. Verify that `gh release view v0.1.0` shows it at `f66cce5`, matching npm's `gitHead` for `0.1.0`.
 - [ ] 6.3 Josh creates the trusted publisher for `edda-ai` on npmjs.com: owner `reveer-ai`, repository `edda`, workflow `release.yml`, environment `npm`, with direct `npm publish` allowed. It expires 2 days after it's created if nothing publishes, so do this no earlier than shortly before the merge. Verify by Josh confirming it.
 
 ## 7. Integration
