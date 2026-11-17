@@ -35,4 +35,4 @@ Facts that shaped this, from the Claude Code docs ([memory](https://code.claude.
 
 - [The index loads into every Claude Code session, so a long index costs context everywhere] → The seed says the index is the agent's to shape, and an index is meant to stay short. That's left to each project's agent.
 - [A project edits the block and the next run replaces the edits] → The markers make the block's extent visible, and the block is an installed file, which Edda's record says projects shouldn't edit.
-- [A 0.1.0 project ends up with both `edda/README.md` and `edda/index.md`, and nothing points agents at the old file] → Accepted. Edda itself is the only known 0.1.0 user, and this change moves its record by hand. A migration command can handle this later.
+- [A 0.1.0 project ends up with both `edda/README.md` and `edda/index.md`, and nothing points agents at the old file] → Accepted. Edda itself is the only known 0.1.0 user, and this change removes its record so it can be rebuilt. A migration command can handle this later.

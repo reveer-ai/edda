@@ -11,7 +11,7 @@
 - If `CLAUDE.md` imports `AGENTS.md` (a line that's just `@AGENTS.md`), init writes the block only to `AGENTS.md`, since Claude Code gets it through the import. If an earlier run had put a block in `CLAUDE.md`, init removes it.
 - The block sits between marker comments. Later runs replace it where it is, so it's never added twice.
 - **BREAKING:** `seed/README.md`, and the principles list it carried, no longer ship. Init no longer creates `edda/README.md`.
-- Edda's own record moves from `edda/README.md` to `edda/index.md`, and Edda runs init on itself.
+- Edda's own record (`edda/README.md`) is removed from the repository. Josh Gillette will rebuild it with Edda once this change is merged. Edda runs init on itself, which adds `AGENTS.md`.
 - Out of scope:
   - A skill. Skills such as tend and document come later.
   - Migrating a 0.1.0 project's `edda/README.md`. Init never deletes or moves a file the project owns, so such a project ends up with `edda/index.md` beside it. Moving it belongs to a later migration command.
@@ -30,5 +30,5 @@ None.
 
 - Code: `bin/edda.js` and the tests in `test/`.
 - Package: `seed/README.md` is replaced by `seed/index.md`.
-- Docs: the root `README.md` describes what init now sets up. Edda's own record becomes `edda/index.md`.
+- Docs: the root `README.md` describes what init now sets up. Edda's own record is removed, to be rebuilt with Edda.
 - In repositories it's run in, init now edits `AGENTS.md`/`CLAUDE.md`, or creates `AGENTS.md`.
