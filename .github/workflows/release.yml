@@ -31,6 +31,7 @@ jobs:
     outputs:
       name: ${{ steps.package.outputs.name }}
       version: ${{ steps.package.outputs.version }}
+      outcome: ${{ steps.plan.outputs.outcome }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -66,17 +67,41 @@ jobs:
   github-release:
     needs: publish
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     permissions:
       contents: write
     env:
       GH_TOKEN: ${{ github.token }}
       NAME: ${{ needs.publish.outputs.name }}
       VERSION: ${{ needs.publish.outputs.version }}
+      OUTCOME: ${{ needs.publish.outputs.outcome }}
+      # How long to wait for a version this run published to be downloadable: 80 checks, 15 seconds apart.
+      NPM_WAIT_CHECKS: 80
+      NPM_WAIT_SECONDS: 15
     steps:
       - name: Create the GitHub release if it's missing
         run: |
           tag="v$VERSION"
-          if ! npm view "$NAME" versions --json | jq -e --arg v "$VERSION" 'index($v) != null' > /dev/null; then
+          on_npm() {
+            npm view "$NAME" versions --json --prefer-online | jq -e --arg v "$VERSION" 'index($v) != null' > /dev/null
+          }
+          downloadable() {
+            url=$(npm view "$NAME@$VERSION" dist.tarball --prefer-online 2> /dev/null) || return 1
+            [ -n "$url" ] && curl -fsSL -o /dev/null "$url"
+          }
+          if [ "$OUTCOME" = publish ]; then
+            # npm lists a version a minute or two after accepting it, and serves its tarball a few minutes after that.
+            # Waiting for the tarball means the GitHub release only appears once the version can be installed.
+            checks=1
+            until downloadable; do
+              if [ "$checks" -ge "$NPM_WAIT_CHECKS" ]; then
+                echo "npm still doesn't serve $NAME@$VERSION for download, so there's no GitHub release yet. Rerun this job once it does." >&2
+                exit 1
+              fi
+              checks=$((checks + 1))
+              sleep "$NPM_WAIT_SECONDS"
+            done
+          elif ! on_npm; then
             echo "$NAME@$VERSION isn't on npm, so there's no release to create."
             exit 0
           fi
@@ -85,7 +110,7 @@ jobs:
             exit 0
           fi
           # Tag the commit npm says it published, which is this run's commit unless a release was missed.
-          sha=$(npm view "$NAME@$VERSION" gitHead)
+          sha=$(npm view "$NAME@$VERSION" gitHead --prefer-online)
           if [ -z "$sha" ]; then
             echo "npm has no gitHead for $NAME@$VERSION, so the commit to tag is unknown." >&2
             exit 1
